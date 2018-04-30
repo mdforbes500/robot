@@ -63,7 +63,7 @@ void draw() {
   fill(0,0,0);
   
   //Servo D (Left leg, rear, top joint)
-  rect(1200-2*170, 2*40+100, 150, 100);
+  rect(1200-170, 2*40+100, 150, 100);
   fill(232,232,232);
   text("Servo F", 1200-167, 2*40+100-2);
   textSize(32);
@@ -71,7 +71,7 @@ void draw() {
   textSize(16);
   fill(0,0,0);
   //Servo E (Left leg, rear, middle joint)
-  rect(1200-3*170, 2*40+100, 150, 100);
+  rect(1200-2*170, 2*40+100, 150, 100);
   fill(232,232,232);
   text("Servo E", 1200-2*167, 2*40+100-2);
   textSize(32);
@@ -79,7 +79,7 @@ void draw() {
   textSize(16);
   fill(0,0,0);
   //Servo F (Left leg, rear, lower joint)
-  rect(1200-170, 2*40+100, 150, 100);
+  rect(1200-3*170, 2*40+100, 150, 100);
   fill(232,232,232);
   text("Servo D", 1200-3*167, 2*40+100-2);
   textSize(32);
