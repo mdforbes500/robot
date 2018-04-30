@@ -79,7 +79,21 @@ void set_leg_position(int servo, int x, int y, int z) {
   
 }
 
+int[] reverse_kinematic(int servo, int[] inital, int[] coordinates) {
+  /**
+   * To be lazy about the motion
+   */
+  int femur = 55; //mm
+  int cochlia = 29; //mm
+  int pedia = 77; //mm
+   
+  int angle;
 
+  if(servo == a || servo == d || servo == g || servo == k) {
+    angle = 
+  }
+  return angle;
+}
 
 void loop() {
   Usb.Task();
