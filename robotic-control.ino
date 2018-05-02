@@ -47,8 +47,8 @@ static unsigned int m = 6; //lower
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(&Wire, 0x40);
 
 //Max servo settings
-#define SERVOMIN  150
-#define SERVOMAX  600
+#define SERVOMIN  147
+#define SERVOMAX  589
 
 void setup() {
   //Open bluetooth to the ps4 controller
@@ -66,10 +66,35 @@ void setup() {
   pwm.setPWMFreq(60);
 }
 
-void zero_position(int servo, int x, int y, int z) {
+void zero_position() {
   /** 
    *  For reseting to the inital position, where the robot's center of mass in centered and stabilized
    */
+  int alpha = 90;
+  int beta = 90;
+  int gamma = 90;
+   
+   //Maps pulse degrees to pulse length
+  int apulse = map(alpha, 0, 180, SERVOMIN, SERVOMAX);
+  int bpulse = map(beta, 0, 180, SERVOMIN, SERVOMAX);
+  int gpulse = map(gamma, 0, 180, SERVOMIN, SERVOMAX);
+
+  //The actuation
+  //pwm.setPWM(a, 0, gpulse);
+  //pwm.setPWM(b, 0, apulse);
+  //pwm.setPWM(c, 0, bpulse);
+  //pwm.setPWM(d, 0, gpulse);
+  //pwm.setPWM(e, 0, apulse);
+  //pwm.setPWM(f, 0, bpulse);
+  //pwm.setPWM(g, 0, gpulse);
+  //pwm.setPWM(h, 0, apulse);
+  //pwm.setPWM(j, 0, bpulse);
+  //pwm.setPWM(k, 0, gpulse);
+  //pwm.setPWM(l, 0, apulse);
+  //pwm.setPWM(m, 0, bpulse);
+
+  inverse_kinematic(d, e, f, 80, 0, 77);
+   
 }
 
 void set_leg_position(int servo, int x, int y, int z) {
@@ -79,24 +104,37 @@ void set_leg_position(int servo, int x, int y, int z) {
   
 }
 
-int reverse_kinematic(int x, int y, int z) {
+void inverse_kinematic(int hip, int knee, int ankle, int x, int y, int z) {
   /**
-   * To be lazy about the motion
+   * Converts cartesian coordinates to servo angles
    */
+  //Local vars
   int femur = 55; //mm
-  int cochlia = 29; //mm
+  int coxa = 29; //mm
   int tibia = 77; //mm
-  int zoffset = 72; //mm
-  float len = sqrt(y^2 + z^2);
-   
-  float alpha = acos(zoffset/L) + acos((tibia - femur*femur - len*len)/(-2*femur*len));
-  float beta = acos((len*len - tibia*tibia - femur*femur)/(-2*tibia*femur));
-  float gamma = acos(x/y);
+  int zoffset = 77; //mm
+  int l1 = sqrt(x*x + y*y);
+  float len = sqrt(zoffset*zoffset + (l1 - coxa)*(l1-coxa));
 
-  return (alpha, beta, gamma);
+  //Inverse kinematic functions
+  float alpha = acos(zoffset/len) + acos((tibia*tibia - femur*femur - len*len)/(-2*femur*len))*360/(2*PI);
+  float beta = acos((len*len - tibia*tibia - femur*femur)/(-2*tibia*femur))*360/(2*PI);
+  float gamma = acos(x/y)*360/(2*PI);
+
+  //Maps pulse degrees to pulse length
+  int apulse = map(alpha, 0, 180, SERVOMIN, SERVOMAX);
+  int bpulse = map(beta, 0, 180, SERVOMIN, SERVOMAX);
+  int gpulse = map(gamma, 0, 180, SERVOMIN, SERVOMAX);
+
+  //The actuation
+  pwm.setPWM(hip, 0, gpulse);
+  pwm.setPWM(knee, 0, apulse);
+  pwm.setPWM(ankle, 0, bpulse);
 }
 
 void loop() {
+  zero_position();
+  
   Usb.Task();
 
   if (PS4.connected()) {
