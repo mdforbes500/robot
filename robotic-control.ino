@@ -17,10 +17,10 @@ USB Usb;
 BTD Btd(&Usb);
 
 //PS4-bluetooth contoller boject set to pair 
-PS4BT PS4(&Btd, PAIR);
+//PS4BT PS4(&Btd, PAIR);
 
 //One paired, can use this instead
-//PS4BT PS4(&Btd);
+PS4BT PS4(&Btd);
 
 bool printAngle, printTouch;
 uint8_t oldL2Value, oldR2Value;
@@ -79,20 +79,21 @@ void set_leg_position(int servo, int x, int y, int z) {
   
 }
 
-int[] reverse_kinematic(int servo, int[] inital, int[] coordinates) {
+int reverse_kinematic(int x, int y, int z) {
   /**
    * To be lazy about the motion
    */
   int femur = 55; //mm
   int cochlia = 29; //mm
-  int pedia = 77; //mm
+  int tibia = 77; //mm
+  int zoffset = 72; //mm
+  float len = sqrt(y^2 + z^2);
    
-  int angle;
+  float alpha = acos(zoffset/L) + acos((tibia - femur*femur - len*len)/(-2*femur*len));
+  float beta = acos((len*len - tibia*tibia - femur*femur)/(-2*tibia*femur));
+  float gamma = acos(x/y);
 
-  if(servo == a || servo == d || servo == g || servo == k) {
-    angle = 
-  }
-  return angle;
+  return (alpha, beta, gamma);
 }
 
 void loop() {
